@@ -5,6 +5,14 @@ function evolvixConectar(): PDO {
   static $pdo = null;
   if ($pdo !== null) return $pdo;
 
+  // Recién subido, sin pasar por instalar.php: decirlo claro.
+  if (strpos(EVOLVIX_DB_HOST, 'PON-AQUI') !== false) {
+    http_response_code(503);
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode(['ok' => false, 'mensaje' => 'El CRM todavía no está instalado: abre instalar.php en el navegador (tudominio.com/instalar.php) y rellena los datos de la base de datos.']);
+    exit;
+  }
+
   // Hostalia suele mostrar el servidor como «nombre:3306»; PDO quiere el
   // puerto aparte, así que se aceptan las dos formas.
   $host = trim(EVOLVIX_DB_HOST);
