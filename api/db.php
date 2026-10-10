@@ -5,7 +5,12 @@ function evolvixConectar(): PDO {
   static $pdo = null;
   if ($pdo !== null) return $pdo;
 
-  $dsn = 'mysql:host=' . EVOLVIX_DB_HOST . ';dbname=' . EVOLVIX_DB_NOMBRE . ';charset=utf8mb4';
+  // Hostalia suele mostrar el servidor como «nombre:3306»; PDO quiere el
+  // puerto aparte, así que se aceptan las dos formas.
+  $host = trim(EVOLVIX_DB_HOST);
+  $puerto = '';
+  if (preg_match('/^(.+):(\d+)$/', $host, $m)) { $host = $m[1]; $puerto = ';port=' . $m[2]; }
+  $dsn = 'mysql:host=' . $host . $puerto . ';dbname=' . trim(EVOLVIX_DB_NOMBRE) . ';charset=utf8mb4';
   try {
     $pdo = new PDO($dsn, EVOLVIX_DB_USUARIO, EVOLVIX_DB_CLAVE, [
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

@@ -284,7 +284,9 @@ function apiFetch(ruta, opciones){
       ? 'La conexión ha tardado demasiado.' : 'No se ha podido contactar con el servidor.'}};
   });
 }
-function apiMensaje(r){ var d=r&&r.datos; return (d&&d.mensaje) || 'Error '+(r?r.estado:0); }
+// Con EVOLVIX_DEPURAR activado en api/config.php, el servidor añade el
+// detalle técnico del error: se muestra para poder diagnosticarlo.
+function apiMensaje(r){ var d=r&&r.datos; var m=(d&&d.mensaje) || 'Error '+(r?r.estado:0); return d&&d.detalle ? m+' ('+d.detalle+')' : m; }
 function apiGet(ruta){ return apiFetch(ruta); }
 function apiPost(ruta, body){ return apiFetch(ruta, {method:'POST', body:body}); }
 function apiPatch(ruta, body){ return apiFetch(ruta, {method:'PATCH', body:body}); }
