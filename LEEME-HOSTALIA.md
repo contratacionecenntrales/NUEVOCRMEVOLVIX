@@ -23,8 +23,10 @@ Entra en **phpMyAdmin** desde el panel de Hostalia, elige tu base de datos
 nueva, pestaña **SQL**, y pega entero el contenido de `sql/01-esquema.sql`.
 Pulsa **Continuar/Ejecutar**.
 
-Verás al final una fila de comprobación: `marcas >= 1` y `tablas_creadas = 7`.
-Esto crea las tablas y siembra la marca «Evolvix Global», ya lista.
+Verás al final una fila de comprobación: `marcas >= 2` y `tablas_creadas = 7`.
+Esto crea las tablas y siembra las dos marcas del grupo, ya listas:
+**Labs24k** (facturas `LAB-2026-0001`…) e **ICC (Integral Connection
+Consulting)** (facturas `ICC-2026-0001`…).
 
 ## Paso 3 · Subir los archivos
 
@@ -61,7 +63,7 @@ limpio no dejarlo ahí.
 
 Abre `https://tudominio.com/index.html`, entra con el correo y la
 contraseña del paso 4. Deberías ver el **Resumen del Grupo** con la marca
-«Evolvix Global» ya creada, sin facturas todavía.
+Labs24k e ICC ya creadas, sin facturas todavía.
 
 ## Añadir más cuentas (admin o contable) más adelante
 
@@ -99,7 +101,7 @@ PHP de `api/`, no MySQL:
 - Cada factura creada y cada cambio de estado quedan en un histórico
   (`factura_eventos`) que la aplicación solo puede rellenar, nunca editar
   ni borrar.
-- La numeración de cada factura (`EVO-2026-0001`, por marca y año) la
+- La numeración de cada factura (`LAB-2026-0001`, `ICC-2026-0001`, por marca y año) la
   calcula el propio servidor con un truco de MySQL pensado para que dos
   facturas creadas a la vez por personas distintas nunca choquen.
 
@@ -117,7 +119,7 @@ simulaciones):
   puede (bloqueado por `api/marcas.php`, con 403).
 - Una petición que cambia datos sin el token anti-CSRF se rechaza (403).
 - Dos facturas seguidas, de marcas distintas, reciben numeración
-  correlativa independiente (`EVO-2026-0001`, `LAB-2026-0001`).
+  correlativa independiente (`LAB-2026-0001`, `ICC-2026-0001`).
 - Cada factura creada deja su evento en el histórico; cada cambio de estado
   deja uno más.
 - Intentar borrar una factura por la API da **405** (ese método no existe).

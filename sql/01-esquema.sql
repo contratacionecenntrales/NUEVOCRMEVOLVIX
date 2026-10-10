@@ -104,10 +104,16 @@ CREATE TABLE IF NOT EXISTS factura_eventos (
   CONSTRAINT fk_eventos_factura FOREIGN KEY (factura_id) REFERENCES facturas(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Siembra la marca «Evolvix Global» si todavía no existe ninguna marca.
+-- Siembra las dos marcas que gestiona el grupo, si todavía no existen.
+-- El prefijo es el que llevará la numeración de sus facturas
+-- (LAB-2026-0001, ICC-2026-0001...).
 INSERT INTO marcas (nombre, prefijo, cif, email, color, activa)
-SELECT 'Evolvix Global', 'EVO', '', '', '#EF7F14', 1
-WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre = 'Evolvix Global');
+SELECT 'Labs24k', 'LAB', '', '', '#17C8C0', 1
+WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre = 'Labs24k' OR prefijo = 'LAB');
+
+INSERT INTO marcas (nombre, prefijo, cif, email, color, activa)
+SELECT 'ICC (Integral Connection Consulting)', 'ICC', '', '', '#3B82F6', 1
+WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre = 'ICC (Integral Connection Consulting)' OR prefijo = 'ICC');
 
 -- =============================================================================
 -- COMPROBACIÓN
@@ -118,4 +124,4 @@ SELECT
      WHERE table_schema = DATABASE()
        AND table_name IN ('perfiles','marcas','clientes','numeracion_facturas',
                            'facturas','factura_lineas','factura_eventos')) AS tablas_creadas;
--- Esperado: marcas >= 1, tablas_creadas = 7.
+-- Esperado: marcas >= 2, tablas_creadas = 7.
