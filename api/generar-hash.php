@@ -33,7 +33,7 @@ code{background:#0F1626;padding:2px 5px;border-radius:5px}
 <p>Para crear una cuenta nueva (admin o contable) sin volver a ejecutar
 <code>instalar.php</code>: escribe la contraseña, copia el resultado, y pégalo
 en un INSERT desde phpMyAdmin, cambiando el correo, el nombre y el rol que
-quieras (<code>'admin'</code> o <code>'contable'</code>).</p>
+quieras (<code>'admin'</code> o <code>'contable'</code>; para la asesora fiscal o laboral, <code>'contable'</code>).</p>
 <form method="post">
   <input name="clave" type="password" placeholder="Contraseña (mín. 10 caracteres)" required>
   <button type="submit">Generar</button>

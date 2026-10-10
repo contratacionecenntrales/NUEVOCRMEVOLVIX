@@ -7,7 +7,7 @@ $pdo = evolvixConectar();
 
 if ($metodo === 'GET') {
   evolvixRequiereSesion();
-  $filas = $pdo->query('SELECT id, nombre, cif, email, color, activa FROM marcas ORDER BY nombre ASC')->fetchAll();
+  $filas = $pdo->query('SELECT id, nombre, prefijo, cif, email, color, activa FROM marcas ORDER BY nombre ASC')->fetchAll();
   foreach ($filas as &$f) $f['activa'] = (bool)$f['activa'];
   evolvixJson(['ok' => true, 'datos' => $filas]);
 }
@@ -30,7 +30,7 @@ if ($metodo === 'POST') {
     evolvixJson(['ok' => false, 'mensaje' => 'Ya existe una marca con ese nombre.'], 409);
   }
   $id = (int)$pdo->lastInsertId();
-  $fila = $pdo->prepare('SELECT id, nombre, cif, email, color, activa FROM marcas WHERE id = ?');
+  $fila = $pdo->prepare('SELECT id, nombre, prefijo, cif, email, color, activa FROM marcas WHERE id = ?');
   $fila->execute([$id]);
   $m = $fila->fetch();
   $m['activa'] = (bool)$m['activa'];

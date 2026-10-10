@@ -1,0 +1,10 @@
+# Aquí se guardan los PDF y fotos de las facturas. Nadie puede abrirlos
+# directamente: solo salen por api/documentos.php, después de comprobar
+# que hay una sesión iniciada.
+<IfModule mod_authz_core.c>
+  Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order allow,deny
+  Deny from all
+</IfModule>

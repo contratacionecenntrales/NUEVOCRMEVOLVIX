@@ -104,9 +104,71 @@ CREATE TABLE IF NOT EXISTS factura_eventos (
   CONSTRAINT fk_eventos_factura FOREIGN KEY (factura_id) REFERENCES facturas(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Siembra las dos marcas que gestiona el grupo, si todavía no existen.
+-- Facturas que se SUBEN al sistema (PDF o foto), tanto emitidas como
+-- recibidas (gastos). Entran como borrador ("por revisar", contabilizado = 0)
+-- en cuanto se arrastran al panel, y solo cuentan en los libros y en el
+-- resumen cuando alguien las revisa y pulsa Contabilizar.
+-- Igual que con las facturas creadas en el CRM, una factura contabilizada
+-- nunca se borra: solo se puede anular. Solo un borrador se puede descartar.
+CREATE TABLE IF NOT EXISTS documentos (
+  id                 INT AUTO_INCREMENT PRIMARY KEY,
+  tipo               ENUM('emitida','recibida') NOT NULL,
+  marca_id           INT           NOT NULL,
+  numero             VARCHAR(60)   NOT NULL DEFAULT '',
+  fecha              DATE          NULL,
+  vencimiento        DATE          NULL,
+  contraparte        VARCHAR(200)  NOT NULL DEFAULT '',
+  nif                VARCHAR(40)   NOT NULL DEFAULT '',
+  concepto           VARCHAR(300)  NOT NULL DEFAULT '',
+  categoria          VARCHAR(60)   NOT NULL DEFAULT '',
+  base               DECIMAL(12,2) NOT NULL DEFAULT 0,
+  iva_pct            DECIMAL(5,2)  NOT NULL DEFAULT 21,
+  cuota_iva          DECIMAL(12,2) NOT NULL DEFAULT 0,
+  irpf_pct           DECIMAL(5,2)  NOT NULL DEFAULT 0,
+  cuota_irpf         DECIMAL(12,2) NOT NULL DEFAULT 0,
+  total              DECIMAL(12,2) NOT NULL DEFAULT 0,
+  estado             ENUM('Pendiente','Pagada','Impagada','Anulada') NOT NULL DEFAULT 'Pendiente',
+  fecha_pago         DATE          NULL,
+  contabilizado      TINYINT(1)    NOT NULL DEFAULT 0,
+  contabilizado_por  CHAR(36)      NULL,
+  contabilizado_en   DATETIME      NULL,
+  archivo            VARCHAR(80)   NULL,
+  archivo_nombre     VARCHAR(255)  NOT NULL DEFAULT '',
+  archivo_tipo       VARCHAR(60)   NOT NULL DEFAULT '',
+  archivo_bytes      INT           NOT NULL DEFAULT 0,
+  archivo_sha256     CHAR(64)      NULL,
+  notas              VARCHAR(500)  NOT NULL DEFAULT '',
+  creado_por         CHAR(36)      NULL,
+  creado             DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_documentos_archivo (archivo_sha256),
+  KEY ix_documentos_tipo_fecha (tipo, fecha),
+  CONSTRAINT fk_documentos_marca FOREIGN KEY (marca_id) REFERENCES marcas(id) ON DELETE RESTRICT,
+  CONSTRAINT fk_documentos_creador FOREIGN KEY (creado_por) REFERENCES perfiles(id) ON DELETE SET NULL,
+  CONSTRAINT fk_documentos_contable FOREIGN KEY (contabilizado_por) REFERENCES perfiles(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Histórico de cada factura subida (subida, contabilizada, cobrada,
+-- anulada...). Igual que factura_eventos: la aplicación solo inserta.
+-- Sin clave foránea a propósito: si se descarta un borrador, su rastro
+-- ("subido" y "descartado") se conserva.
+CREATE TABLE IF NOT EXISTS documento_eventos (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  documento_id  INT           NOT NULL,
+  tipo          VARCHAR(40)   NOT NULL,
+  detalle       VARCHAR(300)  NOT NULL DEFAULT '',
+  creado_por    CHAR(36)      NULL,
+  creado        DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY ix_documento_eventos_doc (documento_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Siembra las marcas del grupo, si todavía no existen: la propia Evolvix
+-- Global (facturas a nombre de la sociedad) y sus dos marcas registradas.
 -- El prefijo es el que llevará la numeración de sus facturas
--- (LAB-2026-0001, ICC-2026-0001...).
+-- (EVO-2026-0001, LAB-2026-0001, ICC-2026-0001...).
+INSERT INTO marcas (nombre, prefijo, cif, email, color, activa)
+SELECT 'Evolvix Global', 'EVO', '', '', '#EF7F14', 1
+WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre = 'Evolvix Global' OR prefijo = 'EVO');
+
 INSERT INTO marcas (nombre, prefijo, cif, email, color, activa)
 SELECT 'Labs24k', 'LAB', '', '', '#17C8C0', 1
 WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre = 'Labs24k' OR prefijo = 'LAB');
@@ -123,5 +185,6 @@ SELECT
   (SELECT COUNT(*) FROM information_schema.tables
      WHERE table_schema = DATABASE()
        AND table_name IN ('perfiles','marcas','clientes','numeracion_facturas',
-                           'facturas','factura_lineas','factura_eventos')) AS tablas_creadas;
--- Esperado: marcas >= 2, tablas_creadas = 7.
+                           'facturas','factura_lineas','factura_eventos',
+                           'documentos','documento_eventos')) AS tablas_creadas;
+-- Esperado: marcas >= 3, tablas_creadas = 9.

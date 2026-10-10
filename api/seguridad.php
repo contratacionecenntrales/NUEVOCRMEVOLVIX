@@ -87,3 +87,15 @@ function evolvixRequiereAdmin(): array {
   }
   return $u;
 }
+
+// --- Carpeta de los PDF/fotos subidos ---------------------------------------
+// Por defecto, archivos/ junto a index.html (su propio .htaccess impide
+// abrirla desde fuera). Si Hostalia te deja una carpeta FUERA de httpdocs,
+// mejor aún: indícala en config.php con EVOLVIX_DIR_ARCHIVOS.
+function evolvixDirArchivos(): string {
+  $dir = defined('EVOLVIX_DIR_ARCHIVOS') ? EVOLVIX_DIR_ARCHIVOS : dirname(__DIR__) . '/archivos';
+  if (!is_dir($dir) && !@mkdir($dir, 0750, true)) {
+    evolvixJson(['ok' => false, 'mensaje' => 'No se puede crear la carpeta de archivos en el servidor.'], 500);
+  }
+  return rtrim($dir, '/');
+}
