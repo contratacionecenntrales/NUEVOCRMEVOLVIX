@@ -75,6 +75,11 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,B
 .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 .login-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px;max-width:380px;width:100%}
 .login-card h1{font-size:19px;margin:0 0 4px;text-align:center}
+.login-logo{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 0 16px}
+.login-logo img{width:64px;height:64px;display:block}
+.login-logo .wm{display:flex;flex-direction:column;line-height:1;text-align:left}
+.login-logo .wm b{font-size:34px;font-weight:700;letter-spacing:.5px;color:#F1F5F9}
+.login-logo .wm span{font-size:15px;font-weight:500;letter-spacing:7px;color:#E2E8F0;margin-top:6px;padding-left:2px}
 .login-card p.tag{text-align:center;color:var(--muted);font-size:12.5px;margin:0 0 26px}
 .lg-err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#FCA5A5;padding:9px 12px;border-radius:9px;font-size:12.5px;margin-bottom:14px}
 </style>
@@ -179,8 +184,8 @@ function renderLogin(){
   var err = LOGIN.error ? '<div class="lg-err">'+esc(LOGIN.error)+'</div>' : '';
   document.body.innerHTML =
   '<div class="login-wrap"><div class="login-card">'+
-    '<img src="evolvix-icono.png" alt="Evolvix Global" style="width:48px;height:48px;display:block;margin:0 auto 14px">'+
-    '<h1>Evolvix Global</h1>'+
+    '<h1 class="login-logo" aria-label="Evolvix Global"><img src="evolvix-icono.png" alt="">'+
+      '<span class="wm"><b>EVOLVIX</b><span>GLOBAL</span></span></h1>'+
     '<p class="tag">Facturación de Grupo</p>'+
     err+
     '<div class="field"><label>Correo</label>'+
