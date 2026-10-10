@@ -1,0 +1,3 @@
+# PDF y fotos de facturas reales: nunca al repositorio.
+/archivos/*
+!/archivos/.htaccess

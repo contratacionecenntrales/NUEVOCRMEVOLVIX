@@ -1,0 +1,4 @@
+pdf.js 3.11.174 (build "legacy") de Mozilla, licencia Apache 2.0.
+Se usa en el navegador para leer el texto de las facturas en PDF y dibujar
+su miniatura. Va alojado aqui (no en un CDN) porque la CSP del .htaccess
+solo permite scripts del propio dominio.
