@@ -1,7 +1,7 @@
 # NUEVOCRMEVOLVIX
 
 CRM / facturación de grupo de Evolvix Global (PHP + MySQL, pensado para Hostalia):
-Evolvix Global y sus marcas Labs24k e ICC. Facturas emitidas y recibidas
+Grupo Evolvix Global y sus marcas Labs24k e ICC. Facturas emitidas y recibidas
 (arrastrando los PDF, que el panel lee solo), cobros y pagos pendientes y una
 vista para la asesoría fiscal con descargas en Excel y ZIP.
 

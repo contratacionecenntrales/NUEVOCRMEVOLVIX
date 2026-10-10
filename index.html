@@ -570,7 +570,7 @@ function viewDashboard(v){
   (pend ? '<div class="aviso">'+ic('spark',18)+'<div class="tx"><b>'+pend+' factura'+(pend>1?'s':'')+' por revisar.</b> Están subidas pero todavía no cuentan en los libros ni aquí.</div>'+
     '<button class="btn btn-xs btn-p" data-go2="bandeja">Revisar ahora</button></div>' : '')+
   '<div class="filtros"><select class="inp" id="rs-anio">'+aniosConDatos().map(function(a){ return '<option'+(a===RES.anio?' selected':'')+'>'+a+'</option>'; }).join('')+'</select>'+
-    '<span class="muted tiny">Evolvix Global, Labs24k, ICC y el resto de marcas del grupo, todo junto.</span></div>'+
+    '<span class="muted tiny">Grupo Evolvix Global y sus marcas (Labs24k, ICC...), todo junto.</span></div>'+
   '<div class="grid g-3" style="margin-bottom:16px">'+
     kpis.map(function(k){ return '<div class="card kpi"><div class="lbl">'+k[0]+'</div><div class="val" style="color:var(--'+k[2]+')">'+k[1]+'</div><div class="sub">'+esc(k[3])+'</div></div>'; }).join('')+
   '</div>'+
@@ -914,6 +914,7 @@ function iso(y, mo, d){
 function patronesMarca(m){
   var n = m.nombre, ps = [n], par = n.match(/^(.*?)\s*\((.*)\)\s*$/);
   if(par){ ps.push(par[1]); ps.push(par[2]); }
+  if(/^grupo\s+/i.test(n)) ps.push(n.replace(/^grupo\s+/i,''));
   ps.push(n.replace(/\s+/g,''));
   return ps.filter(function(p){ return p && p.length>=3; }).map(function(p){
     var e = p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&').replace(/\s+/g,'\\s*');
@@ -1479,7 +1480,7 @@ function viewMarcas(v){
 
   v.innerHTML =
   '<div class="card">'+
-    '<div class="card-h"><div><h3>Marcas del grupo</h3><p>Evolvix Global y sus marcas registradas. Cada cliente y cada factura cuelgan de una de ellas.</p></div>'+
+    '<div class="card-h"><div><h3>Marcas del grupo</h3><p>Grupo Evolvix Global y sus marcas registradas. Cada cliente y cada factura cuelgan de una de ellas.</p></div>'+
       (esAdmin() ? '<button class="btn btn-p" id="mk-nuevo">'+ic('plus',16)+' Nueva marca</button>' : '')+
     '</div>'+
     '<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Marca</th><th>Prefijo</th><th>CIF</th><th>Correo</th><th>Estado</th><th></th></tr></thead><tbody>'+filas+'</tbody></table></div>'+

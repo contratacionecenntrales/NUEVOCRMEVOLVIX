@@ -25,14 +25,15 @@ Pulsa **Continuar/Ejecutar**.
 
 Verás al final una fila de comprobación: `marcas >= 3` y `tablas_creadas = 9`.
 Esto crea las tablas y siembra las marcas del grupo, ya listas:
-**Evolvix Global** (facturas a nombre de la sociedad, `EVO-2026-0001`…),
+**Grupo Evolvix Global** (facturas a nombre de la sociedad, `EVO-2026-0001`…),
 **Labs24k** (`LAB-2026-0001`…) e **ICC (Integral Connection Consulting)**
 (`ICC-2026-0001`…).
 
 > **¿Ya lo tenías instalado?** Vuelve a ejecutar `sql/01-esquema.sql` entero
 > igual que la primera vez. No borra ni cambia nada de lo que ya hay: solo
 > añade las tablas nuevas (`documentos` y `documento_eventos`) y la marca
-> Evolvix Global si falta.
+> Grupo Evolvix Global si falta (si ya la tenías como «Evolvix Global», la
+> renombra).
 
 ## Paso 3 · Subir los archivos
 
@@ -84,10 +85,10 @@ limpio no dejarlo ahí.
 ## Comprobar que ha funcionado
 
 Abre `https://tudominio.com/index.html`, entra con el correo y la
-contraseña del paso 4. Deberías ver el **Resumen del Grupo** con Evolvix
-Global, Labs24k e ICC ya creadas, sin facturas todavía.
+contraseña del paso 4. Deberías ver el **Resumen del Grupo** con Grupo
+Evolvix Global, Labs24k e ICC ya creadas, sin facturas todavía.
 
-**Consejo:** en **Marcas**, pon el CIF de Evolvix Global SL en las marcas
+**Consejo:** en **Marcas**, pon el CIF de Grupo Evolvix Global SL en las marcas
 (desde phpMyAdmin, tabla `marcas`, columna `cif`). Con el CIF, el panel
 distingue todavía mejor solo si una factura que arrastras es emitida o
 recibida.

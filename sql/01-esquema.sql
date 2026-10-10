@@ -161,13 +161,16 @@ CREATE TABLE IF NOT EXISTS documento_eventos (
   KEY ix_documento_eventos_doc (documento_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Siembra las marcas del grupo, si todavía no existen: la propia Evolvix
--- Global (facturas a nombre de la sociedad) y sus dos marcas registradas.
+-- Siembra las marcas del grupo, si todavía no existen: la propia sociedad,
+-- Grupo Evolvix Global (facturas a su nombre), y sus dos marcas registradas.
 -- El prefijo es el que llevará la numeración de sus facturas
 -- (EVO-2026-0001, LAB-2026-0001, ICC-2026-0001...).
 INSERT INTO marcas (nombre, prefijo, cif, email, color, activa)
-SELECT 'Evolvix Global', 'EVO', '', '', '#EF7F14', 1
-WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre = 'Evolvix Global' OR prefijo = 'EVO');
+SELECT 'Grupo Evolvix Global', 'EVO', '', '', '#EF7F14', 1
+WHERE NOT EXISTS (SELECT 1 FROM marcas WHERE nombre IN ('Grupo Evolvix Global', 'Evolvix Global') OR prefijo = 'EVO');
+
+-- Instalaciones anteriores la crearon como «Evolvix Global»: se renombra.
+UPDATE marcas SET nombre = 'Grupo Evolvix Global' WHERE prefijo = 'EVO' AND nombre = 'Evolvix Global';
 
 INSERT INTO marcas (nombre, prefijo, cif, email, color, activa)
 SELECT 'Labs24k', 'LAB', '', '', '#17C8C0', 1
