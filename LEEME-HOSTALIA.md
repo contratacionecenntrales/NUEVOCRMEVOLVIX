@@ -6,44 +6,28 @@ Hostalia**, en MySQL y PHP (lo que trae de serie cualquier plan de Hostalia
 con web). No hace falta terminal ni SSH: todo se hace desde el panel de
 Hostalia (Plesk o cPanel) y desde el navegador.
 
+Son **3 pasos**. No hace falta pegar nada en phpMyAdmin ni editar archivos:
+el instalador lo hace todo.
+
 ## Paso 1 · Crear la base de datos MySQL
 
-En el panel de Hostalia: **Bases de datos → Crear base de datos MySQL**.
-Apunta estos cuatro datos que te da Hostalia al crearla — los necesitarás en
-el paso 3:
+En el panel de Hostalia: **Bases de datos → Crear base de datos MySQL**, con
+su usuario. Apunta los cuatro datos que te da Hostalia:
 
-- Servidor (host): a veces es `localhost`, a veces algo como `mysqlXXX.hostalia.com`
-- Nombre de la base de datos
-- Usuario
-- Contraseña
+- **Servidor**: algo parecido a `PMYSQL123.dns-servicio.com` (si sale con
+  `:3306` al final, se puede escribir así).
+- **Nombre** de la base de datos.
+- **Usuario** de MySQL (tiene que estar asignado a esa base de datos).
+- **Contraseña** de ese usuario.
 
-## Paso 2 · Crear las tablas
+## Paso 2 · Subir los archivos
 
-Entra en **phpMyAdmin** desde el panel de Hostalia, elige tu base de datos
-nueva, pestaña **SQL**, y pega entero el contenido de `sql/01-esquema.sql`.
-Pulsa **Continuar/Ejecutar**.
+En el **Administrador de archivos** de Hostalia, entra en `httpdocs`, sube
+el ZIP y pulsa **Extraer**. Los archivos tienen que quedar **directamente**
+en `httpdocs` (que se vea `httpdocs/index.html`, no
+`httpdocs/otra-carpeta/index.html`).
 
-Verás al final una fila de comprobación: `marcas >= 3` y `tablas_creadas = 9`.
-Esto crea las tablas y siembra las marcas del grupo, ya listas:
-**Grupo Evolvix Global** (facturas a nombre de la sociedad, `EVO-2026-0001`…),
-**Labs24k** (`LAB-2026-0001`…) e **ICC (Integral Connection Consulting)**
-(`ICC-2026-0001`…).
-
-> **¿Ya lo tenías instalado?** Vuelve a ejecutar `sql/01-esquema.sql` entero
-> igual que la primera vez. No borra ni cambia nada de lo que ya hay: solo
-> añade las tablas nuevas (`documentos` y `documento_eventos`) y la marca
-> Grupo Evolvix Global si falta (si ya la tenías como «Evolvix Global», la
-> renombra).
-
-## Paso 3 · Subir los archivos
-
-Sube **todo** el contenido de esta carpeta (`index.html`, `.htaccess`,
-`.user.ini`, `evolvix-icono.png`, `instalar.php` y las carpetas `api/`,
-`vendor/` y `archivos/`) a la raíz de tu dominio en Hostalia (normalmente
-`httpdocs` o `public_html`), con el administrador de archivos o por FTP.
-Los archivos que empiezan por punto (`.htaccess`, `.user.ini`,
-`archivos/.htaccess`) a veces están ocultos en el ordenador: asegúrate de
-que también se suben.
+Qué es cada cosa, por si te lo preguntas:
 
 - `vendor/pdfjs/` es el lector de PDF que usa el panel para leer las
   facturas que arrastras. Va dentro de tu propio hosting a propósito: las
@@ -56,36 +40,43 @@ que también se suben.
 - `.user.ini` sube el límite de tamaño de archivo a 20 MB. Si tu plan no lo
   admite, cambia `upload_max_filesize` y `post_max_size` en **Plesk →
   Configuración de PHP**. (Las fotos del móvil el panel ya las reduce solo
-  antes de subirlas.) La carpeta `sql/` también puedes subirla como referencia, aunque
-ya no hace falta después del paso 2 (el `.htaccess` impide que nadie pueda
-descargar los `.sql` directamente).
+  antes de subirlas.)
+- `sql/01-esquema.sql` son las tablas. El instalador lo usa solo; el
+  `.htaccess` impide que nadie lo descargue.
 
-Abre `api/config.php` con el editor de archivos de Hostalia (o descárgalo,
-edítalo con el Bloc de notas, y vuelve a subirlo) y rellena los cuatro datos
-del paso 1:
+## Paso 3 · Abrir el instalador
 
-```php
-define('EVOLVIX_DB_HOST', 'el-servidor-que-te-dio-hostalia');
-define('EVOLVIX_DB_NOMBRE', 'el-nombre-de-tu-base-de-datos');
-define('EVOLVIX_DB_USUARIO', 'tu-usuario-mysql');
-define('EVOLVIX_DB_CLAVE', 'tu-contraseña-mysql');
-```
+Abre en el navegador `https://tudominio.com/instalar.php` y rellena un
+único formulario:
 
-## Paso 4 · Crear tu cuenta de administrador
+1. Los cuatro datos de la base de datos del paso 1.
+2. Tu cuenta de administrador del panel (nombre, correo y contraseña).
 
-Abre en el navegador `https://tudominio.com/instalar.php`, rellena el
-formulario (nombre, correo, contraseña de al menos 10 caracteres con
-mayúscula, minúscula, número y símbolo) y pulsa **Crear administrador**.
+Pulsa **Instalar**. El instalador comprueba que la base de datos conecta (y
+si no, te dice en claro qué dato está mal), crea las tablas con las marcas
+del grupo —**Grupo Evolvix Global** (`EVO-2026-0001`…), **Labs24k**
+(`LAB-2026-0001`…) e **ICC (Integral Connection Consulting)**
+(`ICC-2026-0001`…)—, guarda los datos en `api/config.php` y crea tu
+cuenta.
 
-**Después de usarlo, borra `instalar.php` del servidor** con el
-administrador de archivos de Hostalia. El propio script se niega a
-funcionar una segunda vez en cuanto existe cualquier cuenta, pero es más
-limpio no dejarlo ahí.
+Si el hosting no le deja escribir `api/config.php`, te muestra el contenido
+para que lo pegues tú en ese archivo con el editor de Hostalia.
+
+**Después, borra `instalar.php` del servidor.** El propio script se niega a
+funcionar en cuanto existe cualquier cuenta, pero es más limpio no dejarlo
+ahí.
+
+> **¿Ya lo tenías instalado de antes?** Para actualizar la base de datos,
+> en **phpMyAdmin → SQL** pega entero `sql/01-esquema.sql` y ejecútalo. No
+> borra ni cambia nada de lo que ya hay: solo añade lo nuevo (tablas
+> `documentos` y `documento_eventos`, y la marca Grupo Evolvix Global; si ya
+> la tenías como «Evolvix Global», la renombra). Al subir los archivos
+> nuevos, **no sobrescribas tu `api/config.php`**.
 
 ## Comprobar que ha funcionado
 
 Abre `https://tudominio.com/index.html`, entra con el correo y la
-contraseña del paso 4. Deberías ver el **Resumen del Grupo** con Grupo
+contraseña del paso 3. Deberías ver el **Resumen del Grupo** con Grupo
 Evolvix Global, Labs24k e ICC ya creadas, sin facturas todavía.
 
 **Consejo:** en **Marcas**, pon el CIF de Grupo Evolvix Global SL en las marcas
